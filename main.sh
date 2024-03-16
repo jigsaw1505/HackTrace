@@ -42,7 +42,7 @@ function persistence_techniques () {
 	echo "12) Logging and Log Rotation"
  	echo "13) Back to Main Menu"
 	echo "Select a option"
-	cd 'Persistence Scripts'
+	cd Persistence_Scripts
  	read -r choice
   	case $choice in 
 	1)
