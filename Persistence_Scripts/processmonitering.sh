@@ -8,6 +8,15 @@ function display_menu() {
 
 function mem() {
     ps aux
+    echo "Option 1 to kill any process option 2 to back to menu"
+    read -r choice
+    case $choice in
+        1)
+            echo "Enter PID to kill : "
+            read r
+            kill $r
+        2)
+            return
 }
 
 function pid() {
