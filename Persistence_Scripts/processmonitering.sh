@@ -14,7 +14,7 @@ function mem() {
         1)
             echo "Enter PID to kill : "
             read r
-            kill $r
+            sudo kill $r
         2)
             return
 }
