@@ -13,7 +13,6 @@ printf "\e[0m\e[92m | |      | | | |      | | | |        | | / \  \e[0m\e[93m   
 printf "\e[0m\e[92m | |      | | | |      | |  \ \_____  | |/ \ \ \e[0m\e[93m     | |     | |   \ \  | |      | |  \ \_____  | |______ \e[0m\n"
 printf "\e[0m\e[92m |_|      |_| |_|      |_|   \______| |_|   \_\ \e[0m\e[93m    |_|     |_|    \_\ |_|      |_|   \______| |________|\e[0m\n"
 printf "\e[0m\n"
-printf " \e[0m\e[1;41m Malware Forensics Tool  [BY : LegaLogic Pioneers ]\e[0m\n"
 printf "\e[0m\n"
 
 echo "Welcome to Forensics and Malware Analysis Script!"
