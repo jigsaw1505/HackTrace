@@ -19,6 +19,7 @@ function mem() {
         2)
             return
             ;;
+    esac
 }
 
 function pid() {
