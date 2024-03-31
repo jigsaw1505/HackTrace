@@ -15,8 +15,10 @@ function mem() {
             echo "Enter PID to kill : "
             read r
             sudo kill $r
+            ;;
         2)
             return
+            ;;
 }
 
 function pid() {
