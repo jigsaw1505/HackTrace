@@ -122,7 +122,7 @@ function rootkit_detection () {
 function steghide () {
 	cd Steganography
  	chmod +x *
- 	bash stagocracker.sh
+ 	bash stegocracker.sh
 }
 while true; do
   display_menu
