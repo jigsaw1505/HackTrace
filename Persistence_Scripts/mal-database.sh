@@ -112,3 +112,7 @@ while IFS=$'\t' read -r database size_mb last_updated; do
 done <<< "$databases_info"
 
 log_message "INFO" "Database audit completed."
+
+
+# Execute main function
+main
