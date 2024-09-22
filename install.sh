@@ -41,7 +41,7 @@ else
   echo "You chose not to install Python 2."
 fi
 sudo apt-get install rkhunter
-
+sudo apt install htop
 sudo apt-get update
 sudo apt-get install bc
 
