@@ -1,15 +1,62 @@
 #!/bin/bash
 
+# Configuration
+LOG_FILE="/var/log/nfs_management.log"
+BACKUP_DIR="/var/log/nfs_management_backups"
+EXPORTS_FILE="/etc/exports"
+TIMESTAMP=$(date +%Y%m%d_%H%M%S)
+NFS_EXPORT_ENTRY="/srv/nfs *(rw,sync,no_subtree_check)"
+
+# Create backup and log directories if they don't exist
+if [ ! -d "$BACKUP_DIR" ]; then
+    mkdir -p "$BACKUP_DIR"
+fi
+
+# Function to clear old logs and backups before running new operations
+clear_old_logs_and_backups() {
+    echo "Cleaning up old logs and backups..."
+    rm -f "$LOG_FILE"
+    rm -rf "$BACKUP_DIR"/*
+    echo "Old logs and backups deleted."
+}
+
+# Function to log messages
+log_message() {
+    local log_level="$1"
+    local message="$2"
+    local timestamp=$(date +"%Y-%m-%d %T")
+    echo "[$timestamp] [$log_level] $message" >> "$LOG_FILE"
+}
+
+# Function to back up NFS exports file
+backup_exports() {
+    local backup_file="$BACKUP_DIR/exports_backup_$TIMESTAMP"
+    cp "$EXPORTS_FILE" "$backup_file"
+    if [ $? -eq 0 ]; then
+        log_message "INFO" "NFS exports backed up to $backup_file."
+        echo "Backup created at: $backup_file"
+    else
+        log_message "ERROR" "Failed to backup NFS exports."
+        echo "Failed to backup NFS exports."
+    fi
+}
+
+# Clear previous logs and terminal output
+clear_old_logs_and_backups
+clear
+
 # Function to install NFS packages
 install_nfs_packages() {
     echo "Installing NFS packages..."
-    sudo apt-get install ufw
+    sudo apt-get install ufw -y
     sudo apt-get install nfs-kernel-server nfs-common -y
     
-    # Check if installation was successful
+    # Log the result of the installation
     if [ $? -eq 0 ]; then
+        log_message "INFO" "NFS packages installed."
         echo "NFS packages installed."
     else
+        log_message "ERROR" "NFS packages not installed."
         echo "NFS packages not installed."
     fi
 }
@@ -20,17 +67,27 @@ configure_nfs_exports() {
     sudo mkdir -p /srv/nfs
     sudo chmod 777 /srv/nfs   # Adjust permissions as necessary
     
-    # Example: Export /srv/nfs to all clients
-    echo "/srv/nfs *(rw,sync,no_subtree_check)" | sudo tee -a /etc/exports
+    # Backup the exports file before modifying it
+    backup_exports
     
-    # Apply changes
-    sudo exportfs -ra
-    
-    # Check if configuration was successful
-    if [ $? -eq 0 ]; then
-        echo "NFS exports configured."
+    # Check if the export entry already exists in the exports file
+    if ! grep -q "$NFS_EXPORT_ENTRY" "$EXPORTS_FILE"; then
+        # If not, add it
+        echo "$NFS_EXPORT_ENTRY" | sudo tee -a "$EXPORTS_FILE"
+        
+        # Apply changes and check for errors
+        sudo exportfs -ra
+        if [ $? -eq 0 ]; then
+            log_message "INFO" "NFS exports configured."
+            echo "NFS exports configured."
+        else
+            log_message "ERROR" "Failed to configure NFS exports. Check /etc/exports for issues."
+            echo "NFS exports not configured. Please check the log at $LOG_FILE for details."
+        fi
     else
-        echo "NFS exports not configured."
+        # Log if the entry already exists
+        log_message "INFO" "NFS export entry already exists in /etc/exports."
+        echo "NFS export entry already exists in /etc/exports."
     fi
 }
 
@@ -40,10 +97,12 @@ start_nfs_service() {
     sudo systemctl start nfs-server
     sudo systemctl enable nfs-server
     
-    # Check if service started successfully
+    # Log the result of the service startup
     if [ $? -eq 0 ]; then
+        log_message "INFO" "NFS service started."
         echo "NFS service started."
     else
+        log_message "ERROR" "NFS service not started."
         echo "NFS service not started."
     fi
 }
@@ -53,31 +112,42 @@ stop_nfs_service() {
     echo "Stopping NFS service..."
     sudo systemctl stop nfs-server
     
-    # Check if service stopped successfully
+    # Log the result of the service stop
     if [ $? -eq 0 ]; then
+        log_message "INFO" "NFS service stopped."
         echo "NFS service stopped."
     else
+        log_message "ERROR" "NFS service not stopped."
         echo "NFS service not stopped."
     fi
 }
 
-# Function to add firewall rules for NFS
+# Function to configure firewall for NFS
 configure_firewall() {
     echo "Configuring firewall for NFS..."
     sudo ufw allow from 192.168.1.0/24 to any port nfs
     sudo ufw reload
     
-    # Check if firewall configured successfully
+    # Log the result of the firewall configuration
     if [ $? -eq 0 ]; then
+        log_message "INFO" "Firewall configured for NFS."
         echo "Firewall configured for NFS."
     else
+        log_message "ERROR" "Firewall not configured for NFS."
         echo "Firewall not configured for NFS."
     fi
 }
 
-# Main menu
+# Function to display log file and backup locations
+display_log_and_backup_info() {
+    echo "Logs saved at: $LOG_FILE"
+    echo "Backups saved in: $BACKUP_DIR"
+}
+
+# Main menu loop
 while true; do
-    echo "Welcome to NFS management script"
+    clear
+    echo "Welcome to the Advanced NFS Management Script"
     echo "1. Install NFS packages"
     echo "2. Configure NFS exports"
     echo "3. Start NFS service"
@@ -105,10 +175,13 @@ while true; do
             ;;
         6)
             echo "Exiting script."
+            display_log_and_backup_info
             exit 0
             ;;
         *)
             echo "Invalid choice. Please enter a valid option."
             ;;
     esac
+    echo -e "\nPress any key to return to the main menu..."
+    read -n 1
 done
