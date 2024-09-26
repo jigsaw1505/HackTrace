@@ -21,7 +21,7 @@ echo -n "Enter the path to the memory image: "
 
     cd volitility || return
     echo "Select Volitility Plugins"
-    echo "	1. imageinfo
+    echo "	  1. imageinfo
 	  2. pslist
 	  3. psxview
 	  4. connscan
