@@ -54,7 +54,8 @@ printf "\e[0m\n"
     echo "2) Memory forensics"
     echo "3) Rootkit Detection"
     echo "4) Steganography"
-    echo "5) Exit"
+    echo "5) Malware Scanning"
+    echo "6) Exit"
 }
 
 # Persistence techniques function
@@ -124,7 +125,56 @@ steghide() {
     bash stegocracker.sh
     cd .. || return
 }
+run_loop() {
+  while true; do
+    clear
+    malwarescanning
+    hold_output
+  done
+}
 
+malwarescanning() {
+  clear
+  cd mals  
+  echo "Choose an Option:"
+  echo "1) Specific File or Directory"
+  echo "2) Entire File System"
+  echo "3) Back"
+
+  read -p "Enter your choice: " choice
+
+  case $choice in
+    1)
+      echo "Enter Path to Directory:"
+      read -r path
+      if [ -d "$path" ]; then
+        yara -r malscan.yara "$path"
+      else
+        echo "Invalid directory path."
+      fi
+      run_loop
+      ;;
+    2)
+      echo "Scanning the Entire File System..."
+      sudo yara -r malscan.yara /
+      run_loop
+      ;;
+    3)
+      cd ..
+      exit
+      ;;
+    *)
+      echo "Invalid choice. Please choose a valid option."
+      ;;
+  esac
+}
+
+hold_output() {
+  read -p "Press Enter to continue..."
+}
+
+
+ 
 # Main execution loop
 while true; do
     backup_and_clear_logs
@@ -136,7 +186,8 @@ while true; do
         2) memory_forensics ;;
         3) rootkit_detection ;;
         4) steghide ;;
-        5) echo "Exiting..."; exit 0 ;;
+	5) malwarescanning ;;
+	6) echo "Exiting..."; exit 0 ;;
         *) echo -e "${RED}Invalid choice.${RESET}" ;;
     esac
 done
