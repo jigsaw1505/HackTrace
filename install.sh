@@ -94,33 +94,6 @@ rule Malscan {
     \$s21 = \"VBoxService.exe\"
     \$s22 = \"vmware.exe\"
     \$s23 = { b868584d56bb00000000b90a000000ba58560000ed }
-    $p1 = "HARDWARE\\DESCRIPTION\\System" nocase
-	$p2 = "HARDWARE\\DESCRIPTION\\System\\BIOS" nocase
-        $c1 = "RegQueryValue"
-        $r1 = "SystemBiosVersion"
-        $r2 = "VideoBiosVersion"
-        $r3 = "SystemManufacturer"
-	$p1 = "Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\Explorer\\DisallowRun" nocase
-        $p2 = "Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\" nocase
-        $p3 = "SOFTWARE\\Policies\\Microsoft\\Windows Defender" nocase
-        $c1 = "RegSetValue"
-        $r1 = "AntiVirusDisableNotify"
-        $r2 = "DontReportInfectionInformation"
-        $r3 = "DisableAntiSpyware"
-        $r4 = "RunInvalidSignatures"
-        $r5 = "AntiVirusOverride"
-        $r6 = "CheckExeSignatures"
-        $f1 = "blackd.exe" nocase
-        $f2 = "blackice.exe" nocase
-        $f3 = "lockdown.exe" nocase
-        $f4 = "lockdown2000.exe" nocase
-        $f5 = "taskkill.exe" nocase
-        $f6 = "tskill.exe" nocase
-        $f7 = "smc.exe" nocase
-        $f8 = "sniffem.exe" nocase
-        $f9 = "zapro.exe" nocase
-        $f10 = "zlclient.exe" nocase
-        $f11 = "zonealarm.exe" nocase
   condition:
     any of them
 }" > malscan.yara
