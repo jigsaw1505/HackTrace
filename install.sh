@@ -42,7 +42,7 @@ echo " echo -n "Enter the path to the memory image: "
 	9) vc = console ;;
     python2 vol.py -f "$memory_image" $volatility_commands
     cd ../.. || return
-"
+" > volitility.sh
 # Clone Volatility repository
 git clone https://github.com/volatilityfoundation/volatility.git
 
