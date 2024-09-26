@@ -72,27 +72,57 @@ rule Malscan {
     Author = \"Hacktrace\"
   strings:
     \$s1 = \"AV killer\"
-    \$s2 = \"spybot\"
+    \$s2 = \"IsDebugged\"
     \$s3 = \"startkeylogger\"
-    \$s4 = \"Portscanner start ip\"
-    \$s5 = \"InternetOpenA\"
-    \$s6 = \"GetSystemInfo\"
-    \$s7 = \"WININET.dll\"
-    \$s8 = \"PWD144381378271510980\"
-    \$s9 = \"Triple Threat\"
+    \$s4 = \"NtGlobalFlags\"
+    \$s5 = \"SetConsoleCtrlHandler\"
+    \$s6 = \"GenerateConsoleCtrlEvent\"
+    \$s7 = \"QueryInformationProcess\"
+    \$s8 = \"CheckRemoteDebuggerPresent\"
+    \$s9 = \"SetInformationThread\"
     \$s10 = \"keylogger\"
     \$s11 = \"CryptStringToBinary\"
     \$s12 = \"AntiVM\"
-    \$s13 = \"VMware\"
+    \$s13 = \"__invoke__watson\"
     \$s14 = \"Base64\"
-    \$s15 = \"Software\\Microsoft\\Windows\\CurrentVersion\\Run\"
+    \$s15 = \"DebugActiveProcess"
     \$s16 = \"SetEnvironmentVariableW\"
     \$s17 = \"LoadLibraryExW\"
     \$s18 = \"Startup\"
     \$s19 = \"DecodePointer\"
     \$s20 = \"GlobalMemoryStatusEx\"
+    \$s21 = \"VBoxService.exe\"
+    \$s22 = \"\"
+    \$s23 = { b868584d56bb00000000b90a000000ba58560000ed }
+    $p1 = "HARDWARE\\DESCRIPTION\\System" nocase
+	$p2 = "HARDWARE\\DESCRIPTION\\System\\BIOS" nocase
+        $c1 = "RegQueryValue"
+        $r1 = "SystemBiosVersion"
+        $r2 = "VideoBiosVersion"
+        $r3 = "SystemManufacturer"
+	$p1 = "Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\Explorer\\DisallowRun" nocase
+        $p2 = "Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\" nocase
+        $p3 = "SOFTWARE\\Policies\\Microsoft\\Windows Defender" nocase
+        $c1 = "RegSetValue"
+        $r1 = "AntiVirusDisableNotify"
+        $r2 = "DontReportInfectionInformation"
+        $r3 = "DisableAntiSpyware"
+        $r4 = "RunInvalidSignatures"
+        $r5 = "AntiVirusOverride"
+        $r6 = "CheckExeSignatures"
+        $f1 = "blackd.exe" nocase
+        $f2 = "blackice.exe" nocase
+        $f3 = "lockdown.exe" nocase
+        $f4 = "lockdown2000.exe" nocase
+        $f5 = "taskkill.exe" nocase
+        $f6 = "tskill.exe" nocase
+        $f7 = "smc.exe" nocase
+        $f8 = "sniffem.exe" nocase
+        $f9 = "zapro.exe" nocase
+        $f10 = "zlclient.exe" nocase
+        $f11 = "zonealarm.exe" nocase
   condition:
-    \$s1 or \$s2 or \$s3 or \$s4 or \$s5 or \$s6 or \$s7 or \$s8 or \$s9 or \$s10 or \$s11 or \$s12 or \$s13 or \$s14 or \$s15 or \$s16 or \$s17 or \$s18 or \$s19 or \$s20
+    any of them
 }" > malscan.yara
 
 # Check the user's answer and install Python 2 if needed
