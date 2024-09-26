@@ -125,17 +125,10 @@ steghide() {
     bash stegocracker.sh
     cd .. || return
 }
-run_loop() {
-  while true; do
-    clear
-    malwarescanning
-    hold_output
-  done
-}
 
 malwarescanning() {
   clear
-  cd mals  
+  cd MalwareScanning  
   echo "Choose an Option:"
   echo "1) Specific File or Directory"
   echo "2) Entire File System"
@@ -149,15 +142,19 @@ malwarescanning() {
       read -r path
       if [ -d "$path" ]; then
         yara -r malscan.yara "$path"
+	echo "Press any key to continue..."
+	read -n 1 -s
+
       else
         echo "Invalid directory path."
       fi
-      run_loop
       ;;
     2)
       echo "Scanning the Entire File System..."
       sudo yara -r malscan.yara /
-      run_loop
+      echo "Press any key to continue..."
+      read -n 1 -s
+
       ;;
     3)
       cd ..
@@ -167,10 +164,6 @@ malwarescanning() {
       echo "Invalid choice. Please choose a valid option."
       ;;
   esac
-}
-
-hold_output() {
-  read -p "Press Enter to continue..."
 }
 
 
