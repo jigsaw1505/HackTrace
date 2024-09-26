@@ -102,14 +102,8 @@ persistence_techniques() {
 # Function to perform memory forensics using Volatility
 memory_forensics() {
     clear_terminal
-    echo -n "Enter the path to the memory image: "
-    read -r memory_image
-
-    cd MemoryForensicsTools/volatility || return
-    echo -n "Enter Volatility commands (separate them with spaces): "
-    read -r volatility_commands
-    python2 vol.py -f "$memory_image" $volatility_commands
-    cd ../.. || return
+    cd MemoryForensicsTools
+    bash volitility.sh
 }
 
 # Function to detect rootkits
