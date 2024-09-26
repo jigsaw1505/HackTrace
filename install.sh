@@ -85,14 +85,14 @@ rule Malscan {
     \$s12 = \"AntiVM\"
     \$s13 = \"__invoke__watson\"
     \$s14 = \"Base64\"
-    \$s15 = \"DebugActiveProcess"
+    \$s15 = \"DebugActiveProcess\"
     \$s16 = \"SetEnvironmentVariableW\"
     \$s17 = \"LoadLibraryExW\"
     \$s18 = \"Startup\"
     \$s19 = \"DecodePointer\"
     \$s20 = \"GlobalMemoryStatusEx\"
     \$s21 = \"VBoxService.exe\"
-    \$s22 = \"\"
+    \$s22 = \"vmware.exe\"
     \$s23 = { b868584d56bb00000000b90a000000ba58560000ed }
     $p1 = "HARDWARE\\DESCRIPTION\\System" nocase
 	$p2 = "HARDWARE\\DESCRIPTION\\System\\BIOS" nocase
