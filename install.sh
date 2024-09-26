@@ -148,9 +148,9 @@ echo "[✔] Cleaning up old directories...";
 if [ -d "$ETC_DIR/Manisso" ]; then
     echo "$DIR_FOUND_TEXT"
     if [ "$TERMUX" = true ]; then
-        rm -rf "$ETC_DIR/Manisso"
+        rm -rf "$ETC_DIR/jigsaw1505"
     else
-        sudo rm -rf "$ETC_DIR/Manisso"
+        sudo rm -rf "$ETC_DIR/jigsaw1505"
     fi
 fi
 
