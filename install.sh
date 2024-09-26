@@ -15,12 +15,13 @@ fi
 mkdir MemoryForensicsTools
 cd MemoryForensicsTools
 touch volitility.sh
-echo " echo -n "Enter the path to the memory image: "
+cat << EOF >> volitility.sh
+echo -n "Enter the path to the memory image: "
     read -r memory_image
 
     cd volitility || return
     echo "Select Volitility Plugins"
-    echo "1. imageinfo
+    echo "	1. imageinfo
 	  2. pslist
 	  3. psxview
 	  4. connscan
@@ -42,7 +43,7 @@ echo " echo -n "Enter the path to the memory image: "
 	9) vc = console ;;
     python2 vol.py -f "$memory_image" $volatility_commands
     cd ../.. || return
-" > volitility.sh
+EOF
 # Clone Volatility repository
 git clone https://github.com/volatilityfoundation/volatility.git
 
