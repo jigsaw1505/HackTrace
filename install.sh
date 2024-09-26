@@ -9,6 +9,7 @@ sudo apt-get update -y
 if ! command -v git &>/dev/null; then
   echo "Git is not installed, installing now..."
   sudo apt-get install git -y
+  sudo apt-get install yara
 fi
 
 # Create a directory for Forensics tools (more organized)
@@ -21,7 +22,7 @@ echo -n "Enter the path to the memory image: "
 
     cd volitility || return
     echo "Select Volitility Plugins"
-    echo "	  1. imageinfo
+    echo "	1. imageinfo
 	  2. pslist
 	  3. psxview
 	  4. connscan
@@ -55,11 +56,44 @@ chmod +x vol.py
 
 # Create a symbolic link to vol.py in /usr/local/bin (preferred for custom scripts)
 sudo ln -s $(pwd)/vol.py /usr/local/bin/vol.py
-
+cd ../..
 # Ask about Python 2 installation
 echo "For running vol.py you have to use Python 2."
 echo "Do you want to install Python 2? Enter (y/n):"
 read answer
+
+mkdir MalwareScanning
+cd MalwareScanning
+touch malscan.yara
+echo "
+rule Malscan {
+  meta:
+    description = \"This detection is aimed for Scanning PC\"
+    Author = \"Hacktrace\"
+  strings:
+    \$s1 = \"AV killer\"
+    \$s2 = \"spybot\"
+    \$s3 = \"startkeylogger\"
+    \$s4 = \"Portscanner start ip\"
+    \$s5 = \"InternetOpenA\"
+    \$s6 = \"GetSystemInfo\"
+    \$s7 = \"WININET.dll\"
+    \$s8 = \"PWD144381378271510980\"
+    \$s9 = \"Triple Threat\"
+    \$s10 = \"keylogger\"
+    \$s11 = \"CryptStringToBinary\"
+    \$s12 = \"AntiVM\"
+    \$s13 = \"VMware\"
+    \$s14 = \"Base64\"
+    \$s15 = \"Software\\Microsoft\\Windows\\CurrentVersion\\Run\"
+    \$s16 = \"SetEnvironmentVariableW\"
+    \$s17 = \"LoadLibraryExW\"
+    \$s18 = \"Startup\"
+    \$s19 = \"DecodePointer\"
+    \$s20 = \"GlobalMemoryStatusEx\"
+  condition:
+    \$s1 or \$s2 or \$s3 or \$s4 or \$s5 or \$s6 or \$s7 or \$s8 or \$s9 or \$s10 or \$s11 or \$s12 or \$s13 or \$s14 or \$s15 or \$s16 or \$s17 or \$s18 or \$s19 or \$s20
+}" > malscan.yara
 
 # Check the user's answer and install Python 2 if needed
 if [[ "$answer" = "y" ]]; then
@@ -149,3 +183,4 @@ else
     echo "[✘] Installation failed! [✘] ";
     exit
 fi
+
