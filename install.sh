@@ -14,7 +14,35 @@ fi
 # Create a directory for Forensics tools (more organized)
 mkdir MemoryForensicsTools
 cd MemoryForensicsTools
+touch volitility.sh
+echo " echo -n "Enter the path to the memory image: "
+    read -r memory_image
 
+    cd volitility || return
+    echo "Select Volitility Plugins"
+    echo "1. imageinfo
+	  2. pslist
+	  3. psxview
+	  4. connscan
+	  5. connscan
+	  6. socket
+	  7. netscan
+	  8. cmdline
+	  9. console"	
+    read -r volatility_commands
+	case choice in
+	1) vc = imageinfo ;;
+	2) vc = pslist ;;
+	3) vc = psxview ;;
+	4) vc = psscan ;;
+	5) vc = connscan ;;
+	6) vc = socket ;;
+	7) vc = netscan ;;
+	8) vc = cmdline ;;
+	9) vc = console ;;
+    python2 vol.py -f "$memory_image" $volatility_commands
+    cd ../.. || return
+"
 # Clone Volatility repository
 git clone https://github.com/volatilityfoundation/volatility.git
 
