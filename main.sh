@@ -103,44 +103,7 @@ persistence_techniques() {
 # Function to perform memory forensics using Volatility
 memory_forensics() {
     clear_terminal
-    VOLATILITY_PATH="MemoryForensicsTools"
-
-    # Set image file path
-    echo "Enter memory dump file Path : "
-    read -r IMAGE_FILE
-
-    # Set output directory
-    echo "Enter directory of output path"
-    read -r OUTPUT_DIR
-
-    # Create output directory if it doesn't exist
-    mkdir -p "$OUTPUT_DIR"
-
-    # Run Volatility plugins
-    plugins=(
-      "pslist"
-      "pstree"
-      "dlllist"
-      "handles"
-      "connscan"
-      "sockets"
-      "netscan"
-      "filescan"
-      "privs"
-    )
-
-    for plugin in "${plugins[@]}"; do
-      echo "Running $plugin plugin..."
-      $VOLATILITY_PATH -f "$IMAGE_FILE" "$plugin" --output-file="$OUTPUT_DIR/$plugin.txt"
-      echo "$plugin plugin output saved to $OUTPUT_DIR/$plugin.txt"
-    done
-
-    # Additional plugins requiring specific options
-    $VOLATILITY_PATH -f "$IMAGE_FILE" "malfind" --output-file="$OUTPUT_DIR/malfind.txt"
-    $VOLATILITY_PATH -f "$IMAGE_FILE" "apihooks" --output-file="$OUTPUT_DIR/apihooks.txt"
-
-    echo -e "${YELLOW}Memory forensics completed. Press any key to continue...${RESET}"
-    read -n 1 -s
+    bash volitility.sh
 }
 
 # Function to detect rootkits
