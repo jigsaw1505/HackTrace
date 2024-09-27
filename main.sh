@@ -31,22 +31,19 @@ clear_terminal() {
 
 # Display the main menu
 display_menu() {
-
     clear_terminal
 
-
-printf "\e[0m\n"
-printf "\e[0m\e[92m  _        _      ____        ______   _     __\e[0m\e[93m  _________   ________      ____        ______   ________ \e[0m\n"
-printf "\e[0m\e[92m | |	  | |    / __ \      / _____| | |   / /\e[0m\e[93m |___ _____| |  ____  |    / __ \      / _____| | _______|\e[0m\n"
-printf "\e[0m\e[92m | |      | |   / /  \ \    / /       | |  / / \e[0m\e[93m     | |     | |    | |   / /  \ \    / /       | |       \e[0m\n"
-printf "\e[0m\e[92m | |______| |  / /____\ \  | |        | | / /  \e[0m\e[93m     | |     | |____| |  / /____\ \  | |        | |______ \e[0m\n"
-printf "\e[0m\e[92m |  ______  | |  ______  | | |        | |/ /   \e[0m\e[93m     | |     | ___  __| | |______| | | |        | _______|\e[0m\n"
-printf "\e[0m\e[92m | |      | | | |      | | | |        | | / \  \e[0m\e[93m     | |     | |  \ \   | |      | | | |        | |       \e[0m\n"
-printf "\e[0m\e[92m | |      | | | |      | |  \ \_____  | |/ \ \ \e[0m\e[93m     | |     | |   \ \  | |      | |  \ \_____  | |______ \e[0m\n"
-printf "\e[0m\e[92m |_|      |_| |_|      |_|   \______| |_|   \_\ \e[0m\e[93m    |_|     |_|    \_\ |_|      |_|   \______| |________|\e[0m\n"
-printf "\e[0m\n"
-printf "\e[0m\n"
-
+    printf "\e[0m\n"
+    printf "\e[0m\e[92m  _        _      ____        ______   _     __\e[0m\e[93m  _________   ________      ____        ______   ________ \e[0m\n"
+    printf "\e[0m\e[92m | |      | |    / __ \      / _____| | |   / /\e[0m\e[93m |___ _____| |  ____  |    / __ \      / _____| | _______|\e[0m\n"
+    printf "\e[0m\e[92m | |      | |   / /  \ \    / /       | |  / / \e[0m\e[93m     | |     | |    | |   / /  \ \    / /       | |       \e[0m\n"
+    printf "\e[0m\e[92m | |______| |  / /____\ \  | |        | | / /  \e[0m\e[93m     | |     | |____| |  / /____\ \  | |        | |______ \e[0m\n"
+    printf "\e[0m\e[92m |  ______  | |  ______  | | |        | |/ /   \e[0m\e[93m     | |     | ___  __| | |______| | | |        | _______|\e[0m\n"
+    printf "\e[0m\e[92m | |      | | | |      | | | |        | | / \  \e[0m\e[93m     | |     | |  \ \   | |      | | | |        | |       \e[0m\n"
+    printf "\e[0m\e[92m | |      | | | |      | |  \ \_____  | |/ \ \ \e[0m\e[93m     | |     | |   \ \  | |      | |  \ \_____  | |______ \e[0m\n"
+    printf "\e[0m\e[92m |_|      |_| |_|      |_|   \______| |_|   \_\ \e[0m\e[93m    |_|     |_|    \_\ |_|      |_|   \______| |________|\e[0m\n"
+    printf "\e[0m\n"
+    printf "\e[0m\n"
 
     echo -e "${GREEN}Welcome to Forensics and Malware Analysis Script!${RESET}"
     echo -e "${YELLOW}Select an option:${RESET}"
@@ -96,6 +93,9 @@ persistence_techniques() {
             13) cd ..; return ;;
             *) echo -e "${RED}Invalid choice, please try again.${RESET}" ;;
         esac
+
+        echo -e "${YELLOW}Press any key to return to the menu...${RESET}"
+        read -n 1 -s
         cd .. || return
     done
 }
@@ -103,8 +103,44 @@ persistence_techniques() {
 # Function to perform memory forensics using Volatility
 memory_forensics() {
     clear_terminal
-    cd MemoryForensicsTools
-    bash volitility.sh
+    VOLATILITY_PATH="MemoryForensicsTools"
+
+    # Set image file path
+    echo "Enter memory dump file Path : "
+    read -r IMAGE_FILE
+
+    # Set output directory
+    echo "Enter directory of output path"
+    read -r OUTPUT_DIR
+
+    # Create output directory if it doesn't exist
+    mkdir -p "$OUTPUT_DIR"
+
+    # Run Volatility plugins
+    plugins=(
+      "pslist"
+      "pstree"
+      "dlllist"
+      "handles"
+      "connscan"
+      "sockets"
+      "netscan"
+      "filescan"
+      "privs"
+    )
+
+    for plugin in "${plugins[@]}"; do
+      echo "Running $plugin plugin..."
+      $VOLATILITY_PATH -f "$IMAGE_FILE" "$plugin" --output-file="$OUTPUT_DIR/$plugin.txt"
+      echo "$plugin plugin output saved to $OUTPUT_DIR/$plugin.txt"
+    done
+
+    # Additional plugins requiring specific options
+    $VOLATILITY_PATH -f "$IMAGE_FILE" "malfind" --output-file="$OUTPUT_DIR/malfind.txt"
+    $VOLATILITY_PATH -f "$IMAGE_FILE" "apihooks" --output-file="$OUTPUT_DIR/apihooks.txt"
+
+    echo -e "${YELLOW}Memory forensics completed. Press any key to continue...${RESET}"
+    read -n 1 -s
 }
 
 # Function to detect rootkits
@@ -115,6 +151,8 @@ rootkit_detection() {
         return 1
     fi
     sudo rkhunter --check
+    echo -e "${YELLOW}Rootkit detection completed. Press any key to continue...${RESET}"
+    read -n 1 -s
 }
 
 # Function for steganography
@@ -126,48 +164,45 @@ steghide() {
     cd .. || return
 }
 
+# Function for malware scanning
 malwarescanning() {
-  clear
-  cd MalwareScanning  
-  echo "Choose an Option:"
-  echo "1) Specific File or Directory"
-  echo "2) Entire File System"
-  echo "3) Back"
+    clear
+    cd MalwareScanning  
+    echo "Choose an Option:"
+    echo "1) Specific File or Directory"
+    echo "2) Entire File System"
+    echo "3) Back"
 
-  read -p "Enter your choice: " choice
+    read -p "Enter your choice: " choice
 
-  case $choice in
-    1)
-      echo "Enter Path to Directory:"
-      read -r path
-      if [ -d "$path" ]; then
-        yara -r malscan.yara "$path"
-	echo "Press any key to continue..."
-	read -n 1 -s
-
-      else
-        echo "Invalid directory path."
-      fi
-      ;;
-    2)
-      echo "Scanning the Entire File System..."
-      sudo yara -r malscan.yara /
-      echo "Press any key to continue..."
-      read -n 1 -s
-
-      ;;
-    3)
-      cd ..
-      exit
-      ;;
-    *)
-      echo "Invalid choice. Please choose a valid option."
-      ;;
-  esac
+    case $choice in
+        1)
+            echo "Enter Path to Directory:"
+            read -r path
+            if [ -d "$path" ]; then
+                yara -r malscan.yara "$path"
+                echo "Press any key to continue..."
+                read -n 1 -s
+            else
+                echo "Invalid directory path."
+            fi
+            ;;
+        2)
+            echo "Scanning the Entire File System..."
+            sudo yara -r malscan.yara /
+            echo "Press any key to continue..."
+            read -n 1 -s
+            ;;
+        3)
+            cd ..
+            return
+            ;;
+        *)
+            echo "Invalid choice. Please choose a valid option."
+            ;;
+    esac
 }
 
-
- 
 # Main execution loop
 while true; do
     backup_and_clear_logs
@@ -179,8 +214,8 @@ while true; do
         2) memory_forensics ;;
         3) rootkit_detection ;;
         4) steghide ;;
-	5) malwarescanning ;;
-	6) echo "Exiting..."; exit 0 ;;
+        5) malwarescanning ;;
+        6) echo "Exiting..."; exit 0 ;;
         *) echo -e "${RED}Invalid choice.${RESET}" ;;
     esac
 done
