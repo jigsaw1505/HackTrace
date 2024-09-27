@@ -154,14 +154,36 @@ rootkit_detection() {
     echo -e "${YELLOW}Rootkit detection completed. Press any key to continue...${RESET}"
     read -n 1 -s
 }
-
 # Function for steganography
 steghide() {
     clear_terminal
-    cd Steganography || return
-    chmod +x *
-    bash stegocracker.sh
-    cd .. || return
+    echo -e "${GREEN}Steganography Analysis${RESET}"
+    
+    # Check if the Steganography directory exists and navigate to it
+    if [ -d "Steganography" ]; then
+        cd Steganography || { echo -e "${RED}Failed to enter Steganography directory!${RESET}"; return; }
+    else
+        echo -e "${RED}Steganography directory not found!${RESET}"
+        return
+    fi
+
+    # Make scripts executable if not already
+    chmod +x *.sh
+    
+    # Check if stegocracker.sh exists and execute it
+    if [ -f "stegocracker.sh" ]; then
+        echo -e "${YELLOW}Executing stegocracker.sh...${RESET}"
+        bash -x stegocracker.sh  # -x for debug mode
+    else
+        echo -e "${RED}stegocracker.sh not found!${RESET}"
+    fi
+
+    # Return to the main directory
+    cd .. || { echo -e "${RED}Failed to return to main directory!${RESET}"; return; }
+    
+    # Pause to view output
+    echo -e "${YELLOW}Steganography analysis completed. Press any key to return to the main menu...${RESET}"
+    read -n 1 -s
 }
 
 # Function for malware scanning
