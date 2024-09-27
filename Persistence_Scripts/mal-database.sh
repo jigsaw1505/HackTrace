@@ -118,6 +118,44 @@ view_log() {
     tail -n 20 "$LOG_FILE"
 }
 
+# Function to display help
+show_help() {
+    clear
+    echo -e "${YELLOW}Help: Dealing with MySQL Connection Errors${NC}"
+    echo -e "${RED}The error you're seeing:${NC}"
+    echo -e "${RED}ERROR 2002 (HY000): Can't connect to local server through socket '/run/mysqld/mysqld.sock' (2)${NC}"
+    echo -e "${YELLOW}This indicates that the MySQL service is not running or that MySQL is not listening on the default Unix socket.${NC}"
+    echo -e "${YELLOW}Here's how you can resolve this:${NC}"
+    
+    echo -e "${GREEN}1. Check MySQL Service Status:${NC}"
+    echo "   sudo systemctl status mysql"
+    echo "   If it's not running, start it with: sudo systemctl start mysql"
+    
+    echo -e "${GREEN}2. Restart MySQL:${NC}"
+    echo "   sudo systemctl restart mysql"
+    
+    echo -e "${GREEN}3. Check MySQL Socket Configuration:${NC}"
+    echo "   Look in /etc/mysql/my.cnf or /etc/my.cnf for socket path."
+    
+    echo -e "${GREEN}4. Check MySQL Logs:${NC}"
+    echo "   cat /var/log/mysql/error.log"
+    
+    echo -e "${GREEN}5. Check MySQL Permissions:${NC}"
+    echo "   ls -l /run/mysqld/"
+    
+    echo -e "${GREEN}6. Verify MySQL Credentials:${NC}"
+    echo "   Test with: mysql -u root -p"
+    
+    echo -e "${GREEN}7. Check if MySQL is Using TCP Instead of a Socket:${NC}"
+    echo "   Modify the connection command to use -h 127.0.0.1."
+    
+    echo -e "${GREEN}8. Reinstall MySQL (Last Resort):${NC}"
+    echo "   sudo apt-get remove --purge mysql-server mysql-client mysql-common"
+    echo "   sudo apt-get install mysql-server"
+    
+    echo -e "${YELLOW}Let me know if any of these steps help or if you need more details!${NC}"
+}
+
 # Main menu function
 main_menu() {
     clear
@@ -127,7 +165,8 @@ main_menu() {
     echo -e "${YELLOW}1) Perform MySQL Audit${NC}"
     echo -e "${YELLOW}2) Backup Log${NC}"
     echo -e "${YELLOW}3) View Log${NC}"
-    echo -e "${YELLOW}4) Exit${NC}"
+    echo -e "${YELLOW}4) Help${NC}"
+    echo -e "${YELLOW}5) Exit${NC}"
     echo -n -e "${GREEN}Please choose an option: ${NC}"
     read choice
     case $choice in
@@ -141,6 +180,9 @@ main_menu() {
             view_log
             ;;
         4)
+            show_help
+            ;;
+        5)
             echo -e "${GREEN}Exiting...${NC}"
             exit 0
             ;;
