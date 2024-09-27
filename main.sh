@@ -35,7 +35,7 @@ display_menu() {
 
     printf "\e[0m\n"
     printf "\e[0m\e[92m  _        _      ____        ______   _     __\e[0m\e[93m  _________   ________      ____        ______   ________ \e[0m\n"
-    printf "\e[0m\e[92m | |    | |    / __ \      / _____| | |   / /\e[0m\e[93m |___ _____| |  ____  |    / __ \      / _____| | _______|\e[0m\n"
+    printf "\e[0m\e[92m | |      | |    / __ \      / _____| | |   / /\e[0m\e[93m |___ _____| |  ____  |    / __ \      / _____| | _______|\e[0m\n"
     printf "\e[0m\e[92m | |      | |   / /  \ \    / /       | |  / / \e[0m\e[93m     | |     | |    | |   / /  \ \    / /       | |       \e[0m\n"
     printf "\e[0m\e[92m | |______| |  / /____\ \  | |        | | / /  \e[0m\e[93m     | |     | |____| |  / /____\ \  | |        | |______ \e[0m\n"
     printf "\e[0m\e[92m |  ______  | |  ______  | | |        | |/ /   \e[0m\e[93m     | |     | ___  __| | |______| | | |        | _______|\e[0m\n"
@@ -118,14 +118,11 @@ rootkit_detection() {
     echo -e "${YELLOW}Rootkit detection completed. Press any key to continue...${RESET}"
     read -n 1 -s
 }
-
 # Function for steganography
 steghide() {
     clear_terminal
-    cd Steganography || return
-    chmod +x *
+    cd Steganography
     bash stegocracker.sh
-    cd .. || return
 }
 
 # Function for malware scanning
