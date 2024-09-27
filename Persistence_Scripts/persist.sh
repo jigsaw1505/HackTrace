@@ -6,6 +6,9 @@ BACKUP_DIR="/home/kali/backups"
 WATCHLIST=("/home/kali/.config")
 EXCLUDE_PATTERNS=(".log" ".cache")
 
+# Ensure backup directory exists
+mkdir -p "$BACKUP_DIR"
+
 # Function to clear old logs and terminal
 clear_old_logs_and_terminal() {
     echo "Clearing old logs and terminal..."
@@ -15,9 +18,6 @@ clear_old_logs_and_terminal() {
     clear
     echo "Old logs cleared and terminal reset."
 }
-
-# Ensure backup directory exists
-mkdir -p "$BACKUP_DIR"
 
 # Function to log messages
 log_message() {
@@ -75,18 +75,50 @@ check_hashes() {
     fi
 }
 
-# Clear terminal and previous logs
-clear_old_logs_and_terminal
+# Function to perform the scan
+perform_scan() {
+    clear_old_logs_and_terminal
 
-# Loop through watchlist to check each item
-for item in "${WATCHLIST[@]}"; do
-    check_hashes "$item"
-done
+    # Loop through watchlist to check each item
+    for item in "${WATCHLIST[@]}"; do
+        check_hashes "$item"
+    done
 
-# Display scan results, then delete them
-echo "Scan completed. Results saved to $LOG_FILE."
-echo "Displaying scan results:"
-cat "$LOG_FILE"
-rm "$LOG_FILE"
+    # Display scan results, then delete them
+    echo "Scan completed. Results saved to $LOG_FILE."
+    echo "Displaying scan results:"
+    cat "$LOG_FILE"
+    rm "$LOG_FILE"
+    echo "Logs are saved in: $BACKUP_DIR"
+}
 
-echo "Logs are saved in: $BACKUP_DIR"
+# Main menu function
+main_menu() {
+    while true; do
+        clear
+        echo "-----------------------------------------"
+        echo "         File Integrity Checker          "
+        echo "-----------------------------------------"
+        echo "1) Perform Scan"
+        echo "2) Exit"
+        echo "-----------------------------------------"
+        read -p "Select an option: " choice
+
+        case $choice in
+            1)
+                perform_scan
+                read -p "Press Enter to go back to the main menu..."
+                ;;
+            2)
+                echo "Exiting..."
+                exit 0
+                ;;
+            *)
+                echo "Invalid choice. Please try again."
+                ;;
+        esac
+    done
+}
+
+# Run the main menu
+main_menu
