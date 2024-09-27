@@ -48,14 +48,16 @@ main() {
     *) echo "Invalid choice"; return ;;
   esac
 
-  python2 (link unavailable) -f "$memory_image" "$vc"
+  python2 vol.py -f "$memory_image" "$vc"
   cd .. || return
 }
 
-while true
+while true;
 do
   main
+  read -p "Press Enter to continue"
 done
+
 EOF
 # Clone Volatility repository
 git clone https://github.com/volatilityfoundation/volatility.git
