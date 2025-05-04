@@ -15,10 +15,10 @@ log_message() {
     echo "$(date '+%Y-%m-%d %H:%M:%S') - $1" >> "$LOG_FILE"
 }
 
-# Function to check for stegocracker
+# Function to check for stegcracker
 check_dependencies() {
-    if ! command -v stegocracker &> /dev/null; then
-        echo -e "${RED}Error: stegocracker is not installed. Please install it and try again.${RESET}"
+    if ! command -v stegcracker &> /dev/null; then
+        echo -e "${RED}Error: stegcracker is not installed. Please install it and try again.${RESET}"
         exit 1
     fi
 }
@@ -34,8 +34,8 @@ analyze_files() {
             # Check if the file is of a suitable type (image, audio, etc.)
             if file -b --mime-type "$FILE" | grep -qE "^(image|audio)/"; then
                 echo -e "${YELLOW}Analyzing $FILE for hidden data...${RESET}"
-                # Use stegocracker to attempt to crack hidden data
-                OUTPUT=$(stegocracker "$FILE" 2>/dev/null)
+                # Use stegcracker to attempt to crack hidden data
+                OUTPUT=$(stegcracker "$FILE" 2>/dev/null)
 
                 # Check if any hidden data was found
                 if echo "$OUTPUT" | grep -q "Password:"; then
