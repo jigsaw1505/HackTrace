@@ -10,6 +10,7 @@ if ! command -v git &>/dev/null; then
   echo "Git is not installed, installing now..."
   sudo apt-get install git -y
   sudo apt-get install yara
+  sudo apt install stegcracker
 fi
 
 # Create a directory for Forensics tools (more organized)
