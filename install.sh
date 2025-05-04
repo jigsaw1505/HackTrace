@@ -80,36 +80,53 @@ mkdir MalwareScanning
 cd MalwareScanning
 touch malscan.yara
 echo "
-rule Malscan {
-  meta:
-    description = \"This detection is aimed for Scanning PC\"
-    Author = \"Hacktrace\"
-  strings:
-    \$s1 = \"AV killer\"
-    \$s2 = \"IsDebugged\"
-    \$s3 = \"startkeylogger\"
-    \$s4 = \"NtGlobalFlags\"
-    \$s5 = \"SetConsoleCtrlHandler\"
-    \$s6 = \"GenerateConsoleCtrlEvent\"
-    \$s7 = \"QueryInformationProcess\"
-    \$s8 = \"CheckRemoteDebuggerPresent\"
-    \$s9 = \"SetInformationThread\"
-    \$s10 = \"keylogger\"
-    \$s11 = \"CryptStringToBinary\"
-    \$s12 = \"AntiVM\"
-    \$s13 = \"__invoke__watson\"
-    \$s14 = \"Base64\"
-    \$s15 = \"DebugActiveProcess\"
-    \$s16 = \"SetEnvironmentVariableW\"
-    \$s17 = \"LoadLibraryExW\"
-    \$s18 = \"Startup\"
-    \$s19 = \"DecodePointer\"
-    \$s20 = \"GlobalMemoryStatusEx\"
-    \$s21 = \"VBoxService.exe\"
-    \$s22 = \"vmware.exe\"
-    \$s23 = { b868584d56bb00000000b90a000000ba58560000ed }
-  condition:
-    any of them
+rule Suspicious_Malware_Behavior
+{
+    meta:
+        description = "Detects malware with anti-VM, AV evasion, reverse shell, and encoding behavior"
+        author = "YourName"
+        date = "2025-05-04"
+        version = "1.0"
+
+    strings:
+        // Anti-VM functions (commonly found in malware)
+        $s1 = "VBoxService" ascii wide
+        $s2 = "vmware" ascii wide
+        $s3 = "QEMU" ascii wide
+        $s4 = "SbieDll.dll" ascii wide   // Sandboxie detection
+
+        // Antivirus bypass indicators
+        $s5 = "IsDebuggerPresent" ascii
+        $s6 = "NtQueryInformationProcess" ascii
+        $s7 = "AVP.exe" ascii wide
+        $s8 = "taskkill /F /IM" ascii  // Killing AV processes
+
+        // Reverse shell connection indicators
+        $s9 = "cmd.exe /c" ascii
+        $s10 = "nc.exe" ascii
+        $s11 = "powershell -nop -w hidden -e" ascii
+        $s12 = /connect\s+\d{1,3}(\.\d{1,3}){3}/ ascii  // IP connection attempt
+
+        // Malicious domain or C2 patterns
+        $s13 = "http://" ascii
+        $s14 = "https://" ascii
+        $s15 = /[a-z0-9\-\.]+\.(ru|cn|tk|top|xyz)/ ascii  // Suspicious TLDs
+
+        // Changed file extensions (commonly used in ransomware)
+        $s16 = ".locked" ascii
+        $s17 = ".crypted" ascii
+        $s18 = ".enc" ascii
+
+        // Encoding base64 or obfuscation signs
+        $s19 = "base64_decode" ascii
+        $s20 = "FromBase64String" ascii
+        $s21 = /[A-Za-z0-9+/]{30,}={0,2}/ base64  // base64 blob
+
+    condition:
+        6 of ($s*) or
+        all of ($s1, $s2, $s3, $s4) or
+        all of ($s9, $s10, $s11) or
+        (any of ($s13, $s14, $s15) and any of ($s16, $s17, $s18))
 }" > malscan.yara
 
 # Check the user's answer and install Python 2 if needed
