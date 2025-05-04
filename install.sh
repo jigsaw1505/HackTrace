@@ -16,7 +16,7 @@ fi
 mkdir MemoryForensicsTools
 cd MemoryForensicsTools
 touch volitility.sh
-cat << EOF >> volitility.sh
+echo "
 echo -n "Enter the path to the memory image: "
 read -r memory_image
 
@@ -56,9 +56,9 @@ while true;
 do
   main
   read -p "Press Enter to continue"
-done
+  cd ..
+done">volitility.sh
 
-EOF
 # Clone Volatility repository
 git clone https://github.com/volatilityfoundation/volatility.git
 
