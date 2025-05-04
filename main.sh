@@ -105,6 +105,9 @@ memory_forensics() {
     clear_terminal
     cd MemoryForensicsTools
     bash volitility.sh
+    echo "Press any key to continue..."
+    read -n1 -s
+    cd ..
 }
 
 # Function to detect rootkits
@@ -123,6 +126,9 @@ steghide() {
     clear_terminal
     cd Steganography
     bash stegocracker.sh
+    echo "Press any key to continue..."
+    read -n1 -s
+    cd ..
 }
 
 # Function for malware scanning
@@ -147,12 +153,14 @@ malwarescanning() {
             else
                 echo "Invalid directory path."
             fi
+            cd ..
             ;;
         2)
             echo "Scanning the Entire File System..."
             sudo yara -r malscan.yara /
             echo "Press any key to continue..."
             read -n 1 -s
+            cd ..
             ;;
         3)
             cd ..
@@ -160,8 +168,10 @@ malwarescanning() {
             ;;
         *)
             echo "Invalid choice. Please choose a valid option."
+            cd ..
             ;;
     esac
+    
 }
 
 # Main execution loop
